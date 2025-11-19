@@ -13,7 +13,7 @@ from utils import AverageMeter, clip_gradient
 # -----------------------------
 # Training parameters
 # -----------------------------
-data_folder = './content/data'
+data_folder = '/data'
 crop_size = 96
 scaling_factor = 4
 batch_size = 16
@@ -124,4 +124,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
