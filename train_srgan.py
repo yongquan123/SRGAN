@@ -28,8 +28,8 @@ n_channels_d = 64
 fc_size_d = 1024
 
 # Training schedule
-iterations_phase1 = 3000
-iterations_phase2 = 3000
+iterations_phase1 = 5500
+iterations_phase2 = 5500
 lr_phase1 = 1e-4
 lr_phase2 = 1e-5
 grad_clip = None
@@ -38,7 +38,8 @@ beta = 1e-3
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 cudnn.benchmark = True
 
-srresnet_checkpoint = './srresnet_final.pth.tar'
+#srresnet_checkpoint = './srresnet_final.pth.tar'
+srresnet_checkpoint = './checkpoint_srresnet_iter_55000.pth.tar'
 srgan_checkpoint = './srgan_final.pth.tar'
 
 # -----------------------------
@@ -216,3 +217,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
