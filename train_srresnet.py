@@ -22,7 +22,7 @@ grad_clip = None
 num_workers = 4
 print_freq = 50
 
-total_iterations = int(1e6)   # updated
+total_iterations = 1000   # updatedint(1e6)
 save_every = 500              # new: save ckpt every 500 iters
 
 # Model parameters
@@ -124,6 +124,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
