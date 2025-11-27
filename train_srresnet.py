@@ -22,8 +22,8 @@ grad_clip = None
 num_workers = 4
 print_freq = 50
 
-total_iterations = int(1e6)   # updated
-save_every = 500              # new: save ckpt every 500 iters
+total_iterations = int(1e6)
+save_every = 500
 
 # Model parameters
 in_channels = 3
@@ -33,6 +33,8 @@ n_blocks = 16
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 cudnn.benchmark = True
+
+resume_path = "checkpoint_srresnet_iter_55000.pth.tar"   # <<< NEW
 
 def main():
     model = SRResNet(
@@ -46,6 +48,21 @@ def main():
     criterion = nn.MSELoss().to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
+    # ==============================================
+    # LOAD CHECKPOINT
+    # ==============================================
+    print(f"🔄 Loading checkpoint from {resume_path} ...")
+    checkpoint = torch.load(resume_path, map_location=device)
+
+    model.load_state_dict(checkpoint['model_state_dict'])
+    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    start_iteration = checkpoint['iteration']
+
+    print(f"✅ Resumed training from iteration {start_iteration}")
+
+    # ==============================================
+    # DATA LOADER
+    # ==============================================
     train_dataset = DIV2KDataset(
         lr_dir=f'{data_folder}/DIV2K_train_LR_bicubic/X{scaling_factor}',
         hr_dir=f'{data_folder}/DIV2K_train_HR',
@@ -61,7 +78,7 @@ def main():
     )
 
     model.train()
-    current_iteration = 0
+    current_iteration = start_iteration
     train_loader_iter = iter(train_loader)
 
     batch_time = AverageMeter()
@@ -103,9 +120,6 @@ def main():
                   f"Batch Time: {batch_time.val:.3f}s ({batch_time.avg:.3f}s) "
                   f"Data Time: {data_time.val:.3f}s ({data_time.avg:.3f}s)")
 
-        # -----------------------------
-        # SAVE CHECKPOINT EVERY 500 ITERATIONS
-        # -----------------------------
         if current_iteration % save_every == 0:
             checkpoint_path = f"checkpoint_srresnet_iter_{current_iteration}.pth.tar"
             torch.save({
@@ -124,8 +138,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
